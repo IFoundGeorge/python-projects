@@ -5,7 +5,7 @@ while True:
     os.system('cls')
 
     num = random.randint(1, 10)
-    print(num)
+    ## print(num)
 
     print("Welcome to the Number Guessing Game!"
             " I'm thinking of a number between 1 and 10. \n")
