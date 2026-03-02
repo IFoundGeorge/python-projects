@@ -12,10 +12,9 @@ while True:
     print("Please Choose what you want to do:")
     print("1. Add a contact number")
     print("2. View a contact number")
-    print("3. Select a contact number")
-    print("4. Edit a contact number")
-    print("5. Delete a contact number")
-    print("6. Exit \n\n")
+    print("3. Edit a contact number")
+    print("4. Delete a contact number")
+    print("5. Exit \n\n")
 
     choice = int(input("Enter your choice: "))
 
@@ -27,46 +26,38 @@ while True:
             np.savetxt('contact_numbers.txt', contact_numbers, fmt='%s')
             print("Contact added successfully!")
         case 2:
-            print("Loaded from text:", loaded_txt)
+            loaded_txt = np.loadtxt('contact_numbers.txt', dtype=str)  # reload latest data
+            print("Loaded contacts:", loaded_txt, "\n") 
         case 3:
-            name = input("Enter the name of the contact: ")
+            loaded_txt = np.atleast_1d(np.loadtxt('contact_numbers.txt', dtype=str))
+            print("Loaded contacts:", loaded_txt, "\n")
 
-            if name in loaded_txt:
-                for item in loaded_txt:
-                    if item.startswith(name + ":"):
-                        print(f"{name}'s contact number is: {item.split(':')[1]}")
-                        break
-            else:
-                print("Contact not found.")
+            name = input("Enter the name of the contact to edit: ")
 
-        case 4:
-            name = input("Enter the name of the contact: ")
+            matches = np.char.startswith(loaded_txt, name + ":")
 
-            if name in loaded_txt:
+            if np.any(matches):
                 new_number = input("Enter the new contact number: ")
-                updated_numbers = []
-                for item in loaded_txt:
-                    if item.startswith(name + ":"):
-                        updated_numbers.append(f"{name}:{new_number}")
-                    else:
-                        updated_numbers.append(item)
+                updated_numbers = np.where(matches, f"{name}:{new_number}", loaded_txt)
                 np.savetxt('contact_numbers.txt', updated_numbers, fmt='%s')
                 print("Contact number updated successfully!")
             else:
                 print("Contact not found.")
-        case 5:
-            name = input("Enter the name of the contact: ")
-            
-            if name in loaded_txt:
-                updated_numbers = []
-                for item in loaded_txt:
-                    if not item.startswith(name + ":"):
-                        updated_numbers.append(item)
+        case 4:
+            loaded_txt = np.atleast_1d(np.loadtxt('contact_numbers.txt', dtype=str))
+            print("Loaded contacts:", loaded_txt, "\n")
+
+            name = input("Enter the name of the contact to delete: ")
+
+            matches = np.char.startswith(loaded_txt, name + ":")
+
+            if np.any(matches):
+                updated_numbers = loaded_txt[~matches]
                 np.savetxt('contact_numbers.txt', updated_numbers, fmt='%s')
                 print("Contact deleted successfully!")
             else:
                 print("Contact not found.")
-        case 6:
+        case 5:
             print("Exiting the program. Goodbye!")
         case _:
             print("Invalid choice. Please try again.")
